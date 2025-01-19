@@ -11,6 +11,33 @@ import (
 	"time"
 )
 
+var filename string
+
+type licensefile struct {
+	expiry_date string
+}
+
+func (eg *licensefile) licenseinput(date *string) {
+	fmt.Println("Enter the expiry date of the license file in YYYY-MM-DD format:")
+	fmt.Scanln(&eg.expiry_date)
+	*date = eg.expiry_date
+}
+func (eg *licensefile) OAWfile(date *string) {
+	//opening and writing license file
+
+	fmt.Println("Enter the filename with type:")
+	fmt.Scanln(&filename)
+	file, err := os.OpenFile(filename, os.O_WRONLY, 0644)
+
+	if err != nil {
+		fmt.Println("Error in opening the file")
+	}
+
+	file.WriteString("EXPIRYDATE:")
+	file.WriteString(*date)
+	file.WriteString("\n")
+}
+
 func encryptfile(inputfile, outputfile string, key []byte) error {
 
 	// opening and reading the input file
@@ -190,7 +217,7 @@ func displaycontentinfile(filepath string) error {
 
 	}
 
-	fmt.Println("Input given by user :\n")
+	fmt.Println("Input given by user :")
 
 	fmt.Println(string(content))
 	return nil
@@ -198,6 +225,13 @@ func displaycontentinfile(filepath string) error {
 }
 
 func main() {
+
+	lcfile := licensefile{}
+	var temp1 string
+	lcfile.licenseinput(&temp1)
+	fmt.Printf("The expiry date of the license file is %s \n", temp1)
+	lcfile.OAWfile(&temp1)
+	//
 
 	key := []byte("Examplekey123456")
 
@@ -245,6 +279,7 @@ func main() {
 	if checkFileExists("License.txt") {
 		fmt.Println("File 'License.txt' exists.")
 	} else {
+
 		fmt.Println("File 'License.txt' does not exist.")
 	}
 
