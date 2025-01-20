@@ -70,15 +70,14 @@ func encryptfile(inputfile, outputfile string, key []byte) error {
 		fmt.Println("Error in creating GCM")
 	}
 
-	//creating noice
+	//creating nonce
 	nonce := make([]byte, gcm.NonceSize())
 	if _, err := io.ReadFull(rand.Reader, nonce); err != nil {
-		fmt.Println("Error in generating nonce")
+		fmt.Printf("Error generating nonce: %v\n", err)
+		return err // Ensure the program stops if nonce generation fails
 	}
 
-	if err != nil {
-		fmt.Println("Error in generating nonce")
-	}
+	fmt.Printf("Generated nonce: %x\n", nonce) // For debugging
 
 	//Sealing the GCM
 	ciphertext := gcm.Seal(nonce, nonce, plaintext, nil)
@@ -237,7 +236,7 @@ func main() {
 
 	//encrypting the file
 
-	err := encryptfile("License.txt", "encrypted.txt", key)
+	err := encryptfile(filename, "encrypted.txt", key)
 
 	if err != nil {
 		fmt.Println("Error in encryrpting the file")
@@ -255,7 +254,7 @@ func main() {
 	fmt.Println("File decrypted succesfully")
 
 	// validation of license
-	valid, err := validateLicense("License.txt")
+	valid, err := validateLicense(filename)
 	if err != nil {
 		fmt.Println("Error validating the license:", err)
 		return
