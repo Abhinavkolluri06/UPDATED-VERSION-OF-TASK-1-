@@ -282,6 +282,6 @@ func main() {
 		fmt.Println("File 'License.txt' does not exist.")
 	}
 
-	time.Sleep(10 * time.Second)
+	time.Sleep(24 * time.Hour)
 
 }
